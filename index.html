@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Film Review | 1st-Year Baccalaureate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ====================================================
+       ROOT VARIABLES
+    ==================================================== */
+    :root {
+      --bg:          #060606;
+      --bg2:         #0e0e0e;
+      --bg3:         #161616;
+      --surface:     #1c1c1c;
+      --border:      #333;
+      --text:        #e8e3dc;
+      --muted:       #999;
+      --accent:      #c8102e;
+      --accent-glow: #ff1e3c;
+      --gold:        #c9a84c;
+      --green:       #2ecc71;
+      --red-soft:    rgba(200,16,46,0.15);
+      --font-display:'Bebas Neue', sans-serif;
+      --font-body:   'Crimson Pro', serif;
+      --font-mono:   'DM Mono', monospace;
+      --glow:        0 0 20px rgba(200,16,46,0.5), 0 0 50px rgba(200,16,46,0.2);
+      --glow-soft:   0 0 10px rgba(200,16,46,0.3);
+      --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================
+       RESET
+    ==================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--accent); color: #fff; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* ====================================================
+       ANIMATIONS
+    ==================================================== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes glowPulse {
+      0%,100% { text-shadow: 0 0 12px var(--accent), 0 0 40px rgba(200,16,46,0.3); }
+      50%      { text-shadow: 0 0 25px var(--accent-glow), 0 0 70px rgba(200,16,46,0.5); }
+    }
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes blink {
+      0%,100% { border-color: var(--accent); }
+      50%      { border-color: transparent; }
+    }
+
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    /* ====================================================
+       PRESENTER CARD (TOP)
+    ==================================================== */
+    .presenter-bar {
+      background: linear-gradient(135deg, #0a0000 0%, #0e0e0e 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 5%;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+    /* Photo placeholder — replace src on <img> to add your photo */
+    .presenter-photo {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      box-shadow: var(--glow-soft);
+      object-fit: cover;
+      background: var(--bg3);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .presenter-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      /* To add your photo: set src="your-photo.jpg" on the <img> tag below */
+    }
+    .presenter-photo .ph-icon {
+      font-size: 2rem;
+      color: var(--muted);
+      position: absolute;
+    }
+    .presenter-photo img[src=""] ~ .ph-icon,
+    .presenter-photo img:not([src]) ~ .ph-icon { display: flex; }
+    .presenter-info { line-height: 1.4; }
+    .presenter-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
+    .presenter-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.06em;
+      color: var(--text);
+    }
+    .presenter-role {
+      font-size: 0.82rem;
+      color: #aaa;
+      font-style: italic;
+    }
+
+    /* ====================================================
+       HERO
+    ==================================================== */
+    .hero {
+      min-height: 58vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 2rem 4rem;
+      background: radial-gradient(ellipse 80% 60% at 50% 70%, #1f0009 0%, var(--bg) 65%);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      border: 1px dashed rgba(200,16,46,0.18);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      animation: rotateSlow 40s linear infinite;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,16,46,0.08);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      animation: rotateSlow 25s linear infinite reverse;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(200,16,46,0.3);
+      padding: 0.35em 1.2em;
+      border-radius: 30px;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.8s var(--ease) both;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(4.5rem, 14vw, 10rem);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      color: #fff;
+      animation: glowPulse 4s ease-in-out infinite, fadeUp 0.9s 0.1s var(--ease) both;
+      position: relative;
+      z-index: 2;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero-sub {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-top: 1.2rem;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 1s 0.2s var(--ease) both;
+    }
+
+    /* ====================================================
+       NAVBAR
+    ==================================================== */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      background: rgba(6,6,6,0.93);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-bar::-webkit-scrollbar { display: none; }
+    .nav-bar a {
+      color: var(--muted);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 1rem 1.3rem;
+      white-space: nowrap;
+      transition: color 0.25s;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-bar a:hover { color: var(--accent-glow); border-bottom-color: var(--accent); }
+
+    /* ====================================================
+       SECTION WRAPPER
+    ==================================================== */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 5%;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: 0.04em;
+      color: #fff;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--accent) 0%, transparent 100%);
+      margin-left: 1rem;
+    }
+    .section-sub {
+      color: #aaa;
+      font-size: 1rem;
+      margin-bottom: 3rem;
+      font-style: italic;
+    }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ====================================================
+       MOVIE GRID
+    ==================================================== */
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.2rem;
+    }
+    .movie-card {
+      background: var(--bg3);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      position: relative;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s;
+    }
+    .movie-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: var(--glow); border-color: rgba(200,16,46,0.4); }
+    .movie-card img { width: 100%; height: 260px; object-fit: cover; display: block; filter: brightness(0.55) saturate(0.7); transition: filter 0.3s; }
+    .movie-card:hover img { filter: brightness(0.7) saturate(0.9); }
+    .movie-title-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.88);
+      padding: 0.7rem 1rem;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      letter-spacing: 0.06em;
+      color: #bbb;
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    .movie-card.revealed .movie-title-bar {
+      background: rgba(200,16,46,0.85);
+      color: #fff;
+    }
+    .movie-card-tag {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: rgba(200,16,46,0.85);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.2em 0.6em;
+      border-radius: 4px;
+      letter-spacing: 0.1em;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .movie-card.revealed .movie-card-tag { opacity: 1; }
+
+    /* Emoji shown when no poster image is set */
+    .poster-emoji-fallback {
+      display: none; /* shown via JS when src is empty */
+      width: 100%;
+      height: 260px;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      background: #111;
+      color: #fff;
+    }
+
+    /* ====================================================
+       COMPONENTS BOX
+    ==================================================== */
+    .component-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      justify-content: center;
+    }
+    .comp-tag {
+      background: var(--bg3);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      padding: 0.5em 1.2em;
+      border-radius: 40px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      box-shadow: 0 0 6px rgba(200,16,46,0.2);
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+    .comp-tag:hover { background: var(--red-soft); box-shadow: var(--glow-soft); }
+
+    /* ====================================================
+       DEFINITIONS SECTION
+    ==================================================== */
+    .definitions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .def-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+      display: flex;
+      gap: 1.1rem;
+      align-items: flex-start;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    }
+    .def-card:hover {
+      border-color: rgba(200,16,46,0.5);
+      box-shadow: var(--glow-soft);
+      transform: translateY(-3px);
+    }
+    .def-number {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      line-height: 1;
+      color: var(--accent);
+      min-width: 2rem;
+      text-align: center;
+      text-shadow: 0 0 12px rgba(200,16,46,0.4);
+    }
+    .def-content { flex: 1; }
+    .def-term {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      letter-spacing: 0.05em;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+    .def-meaning {
+      font-size: 1rem;
+      color: #c8c3bc;
+      line-height: 1.6;
+    }
+
+    /* ====================================================
+       TEMPLATE SECTIONS
+    ==================================================== */
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 0.8rem;
+    }
+    .examples-grid .example-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .examples-grid .example-box p {
+      margin: 0;
+      line-height: 1.75;
+      font-size: 0.93rem;
+    }
+    .examples-grid .example-box em {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .template-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--accent);
+    }
+    .template-header {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .structure-pill {
+      display: inline-block;
+      background: var(--bg3);
+      color: #bbb;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.3em 0.9em;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      letter-spacing: 0.08em;
+      border: 1px solid #3a3a3a;
+    }
+    .template-text {
+      background: var(--bg3);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: 1.2rem 1.5rem;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .template-text em { color: #ff8fa3; font-style: normal; font-weight: 600; }
+    .example-box {
+      background: var(--bg3);
+      border: 1px solid #3a3a3a;
+      border-radius: 8px;
+      padding: 1rem 1.3rem;
+      font-size: 0.95rem;
+      color: #c5c0b8;
+    }
+    .example-box strong { color: var(--text); }
+
+    /* ====================================================
+       EXERCISES — INTERACTIVE
+    ==================================================== */
+    .exercise-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .exercise-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .ex-badge {
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.25em 0.7em;
+      border-radius: 4px;
+      letter-spacing: 0.1em;
+    }
+
+    /* Word box for exercises */
+    .word-bank {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+    }
+    .word-chip {
+      background: var(--surface);
+      border: 1px solid rgba(200,16,46,0.5);
+      color: #e0dbd2;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 0.35em 0.9em;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .word-chip:hover { background: var(--red-soft); }
+    .word-chip.used { opacity: 0.3; pointer-events: none; text-decoration: line-through; }
+
+    /* Fill-blank inputs */
+    .fill-sentence {
+      line-height: 3;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+    .fill-blank {
+      display: inline-block;
+      border: none;
+      border-bottom: 2px solid var(--accent);
+      background: transparent;
+      color: var(--gold);
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      padding: 0.1em 0.4em;
+      width: 160px;
+      text-align: center;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .fill-blank:focus { border-bottom-color: var(--gold); animation: blink 0.8s step-end infinite; }
+    .fill-blank.correct { border-bottom-color: var(--green); color: var(--green); }
+    .fill-blank.wrong   { border-bottom-color: var(--accent-glow); color: var(--accent-glow); }
+
+    /* Check button */
+    .btn-check {
+      margin-top: 1.2rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.65em 2em;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      box-shadow: 0 0 8px rgba(200,16,46,0.3);
+    }
+    .btn-check:hover { background: var(--accent-glow); box-shadow: var(--glow); transform: translateY(-2px); }
+    .btn-reset {
+      margin-top: 1.2rem;
+      margin-left: 0.7rem;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.65em 1.5em;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-reset:hover { color: var(--text); border-color: var(--muted); }
+
+    /* Feedback */
+    .feedback {
+      margin-top: 0.9rem;
+      padding: 0.8rem 1.2rem;
+      border-radius: 7px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+    .feedback.success { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.35); color: var(--green); display: block; }
+    .feedback.partial { background: rgba(201,168,76,0.1);  border: 1px solid rgba(201,168,76,0.35); color: var(--gold);  display: block; }
+    .feedback.error   { background: rgba(200,16,46,0.1);   border: 1px solid rgba(200,16,46,0.35);  color: var(--accent-glow); display: block; }
+
+    /* ── EXERCISE 2: Match Drag ── */
+    .match-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem 1.5rem;
+      margin-top: 1rem;
+    }
+    .match-left, .match-right { display: flex; flex-direction: column; gap: 0.6rem; }
+    .match-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.7rem 1rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .match-item.left-item { border-left: 3px solid rgba(200,16,46,0.7); }
+    .match-item.right-item { border-right: 3px solid rgba(201,168,76,0.6); color: #bbb; font-size: 0.9rem; }
+    .match-item.selected { border-color: var(--accent); background: var(--red-soft); color: #fff; }
+    .match-item.matched-correct { border-color: var(--green); background: rgba(46,204,113,0.08); color: var(--green); pointer-events: none; }
+    .match-item.matched-wrong   { border-color: var(--accent-glow); background: rgba(200,16,46,0.08); animation: wrongShake 0.3s ease; }
+    @keyframes wrongShake {
+      0%,100% { transform: translateX(0); }
+      25%      { transform: translateX(-6px); }
+      75%      { transform: translateX(6px); }
+    }
+    .match-score { font-family: var(--font-mono); font-size: 0.8rem; color: #bbb; margin-top: 0.8rem; }
+
+    /* ── EXERCISE 3: Sentence Order ── */
+    .order-list { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1rem; }
+    .order-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: grab;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .order-item:active { cursor: grabbing; }
+    .order-item.dragging-active { opacity: 0.4; }
+    .order-item.dragover-target { border-color: var(--accent); box-shadow: var(--glow-soft); }
+    .order-num {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      color: var(--accent);
+      min-width: 2rem;
+      text-align: center;
+      line-height: 1;
+    }
+    .order-text { font-size: 0.95rem; }
+    .order-handle { color: #555; font-size: 1.2rem; margin-left: auto; cursor: grab; }
+    .order-item.correct-pos { border-color: var(--green); }
+    .order-item.wrong-pos   { border-color: var(--accent-glow); }
+
+    /* ====================================================
+       MODEL REVIEW
+    ==================================================== */
+    .model-review-section {
+      background: linear-gradient(135deg, #0d0005 0%, #0e0e0e 100%);
+      border-top: 1px solid var(--border);
+    }
+    .model-review-box {
+      background: var(--bg2);
+      border: 1px solid rgba(200,16,46,0.3);
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: var(--glow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+    .model-review-box::before {
+      content: '❝';
+      position: absolute;
+      top: -0.2rem;
+      left: 1rem;
+      font-size: 6rem;
+      color: rgba(200,16,46,0.06);
+      font-family: Georgia, serif;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .model-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      padding: 0.35em 0.9em;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .model-film-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      letter-spacing: 0.05em;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+    .model-film-title span { color: var(--accent); }
+    .model-year {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #aaa;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.8rem;
+    }
+    .model-paragraph {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: #d4cfc7;
+      margin-bottom: 1.2rem;
+    }
+    .model-paragraph:last-child { margin-bottom: 0; }
+    /* Paragraph labels */
+    .model-part-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .model-copy-btn {
+      margin-top: 2rem;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      padding: 0.6em 1.5em;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    .model-copy-btn:hover { background: var(--red-soft); box-shadow: var(--glow-soft); color: var(--text); }
+
+    /* ====================================================
+       MODAL
+    ==================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--bg3);
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      padding: 2.5rem;
+      max-width: 500px;
+      width: 100%;
+      position: relative;
+      box-shadow: var(--glow), 0 30px 80px rgba(0,0,0,0.7);
+      animation: fadeUp 0.3s ease;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: none; border: none;
+      color: var(--muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--accent-glow); }
+    .modal-movie-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+    .modal-detail {
+      font-size: 0.95rem;
+      color: #bbb;
+      margin-bottom: 0.5rem;
+    }
+    .modal-detail strong { color: var(--text); }
+    .modal-tip {
+      margin-top: 1.2rem;
+      background: var(--bg2);
+      border-left: 3px solid var(--gold);
+      padding: 0.8rem 1rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.9rem;
+      color: #bbb;
+      font-style: italic;
+    }
+
+    /* ====================================================
+       FOOTER
+    ==================================================== */
+    footer {
+      text-align: center;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1rem;
+      color: #aaa;
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.08em;
+    }
+
+    /* ====================================================
+       RESPONSIVE
+    ==================================================== */
+    @media (max-width: 720px) {
+      .match-columns { grid-template-columns: 1fr; }
+      .section { padding: 3.5rem 5%; }
+      .presenter-bar { flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 3.8rem; }
+      .model-review-box { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ====================================================
+     PRESENTER BAR
+     ➡ To add your photo: replace the src="" in the <img> tag below with your image path.
+        Example: src="my-photo.jpg" or src="https://example.com/photo.jpg"
+==================================================== -->
+<div class="presenter-bar">
+  <div class="presenter-photo">
+    <!-- Replace src="" with your photo path to display your picture -->
+    <img src="my_picture.jpg" alt="Anouar Dyane" id="presenterImg" />
+    <span class="ph-icon" id="phIcon">👤</span>
+  </div>
+  <div class="presenter-info">
+    <div class="presenter-label">Presented by</div>
+    <div class="presenter-name">Anouar Dyane</div>
+    <div class="presenter-role">English Teacher · 1st-Year Baccalaureate</div>
+  </div>
+  <!-- Optional: click to upload a photo from device -->
+  <label style="margin-left:auto; cursor:pointer; display:flex; align-items:center; gap:0.5rem; font-family:var(--font-mono); font-size:0.7rem; color:var(--muted); border:1px solid var(--border); padding:0.4em 0.9em; border-radius:6px; transition:border-color 0.2s;" title="Upload your photo">
+    <span>📷 Add Photo</span>
+    <input type="file" accept="image/*" id="photoUpload" style="display:none;" />
+  </label>
+</div>
+
+<!-- ====================================================
+     HERO
+==================================================== -->
+<header class="hero">
+  <div class="hero-eyebrow">English Lesson · Film Review</div>
+  <h1>FILM <span>REVIEW</span></h1>
+  <p class="hero-sub">1st-Year Baccalaureate Students</p>
+</header>
+
+<!-- NAVBAR -->
+<nav class="nav-bar">
+  <a href="#pick">Pick a Movie</a>
+  <a href="#components">Components</a>
+  <a href="#definitions">Definitions</a>
+  <a href="#templates">Templates</a>
+  <a href="#exercises">Exercises</a>
+  <a href="#model">Model Review</a>
+</nav>
+
+<!-- ====================================================
+     SECTION 1: PICK A MOVIE
+==================================================== -->
+<section id="pick" class="section fade-in">
+  <h2 class="section-title">Pick a Movie</h2>
+  <p class="section-sub">Click a card to reveal the film and see its details</p>
+  <div class="movie-grid" id="movieGrid">
+
+    <!-- ═══════════════════════════════════════════
+         CARD 1 — ALONE AT HOME
+         👉 To change the poster: replace the src="" value below
+            with your image path, e.g. src="images/alone-at-home.jpg"
+    ════════════════════════════════════════════ -->
+    <div class="movie-card" id="card-alone">
+      <img
+        id="img-alone"
+        src="home_alone.jpg"
+        alt="Alone at Home poster"
+        loading="lazy"
+        onerror="this.style.display='none'"
+      />
+      <!-- Emoji fallback shown when no image is set -->
+      <div class="poster-emoji-fallback" id="fallback-alone">🏠</div>
+      <span class="movie-card-tag">REVEALED</span>
+      <div class="movie-title-bar" id="mtb-alone">? ? ? ?</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         CARD 2 — KUNG FU PANDA
+         👉 To change the poster: replace the src="" value below
+            with your image path, e.g. src="images/kung-fu-panda.jpg"
+    ════════════════════════════════════════════ -->
+    <div class="movie-card" id="card-kungfu">
+      <img
+        id="img-kungfu"
+        src="king_fu.jpg"
+        alt="Kung Fu Panda poster"
+        loading="lazy"
+        onerror="this.style.display='none'"
+      />
+      <div class="poster-emoji-fallback" id="fallback-kungfu">🐼</div>
+      <span class="movie-card-tag">REVEALED</span>
+      <div class="movie-title-bar" id="mtb-kungfu">? ? ? ?</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         CARD 3 — THE KARATE KID
+         👉 To change the poster: replace the src="" value below
+            with your image path, e.g. src="images/karate-kid.jpg"
+    ════════════════════════════════════════════ -->
+    <div class="movie-card" id="card-karate">
+      <img
+        id="img-karate"
+        src="karate_kid.jpg"
+        alt="The Karate Kid poster"
+        loading="lazy"
+        onerror="this.style.display='none'"
+      />
+      <div class="poster-emoji-fallback" id="fallback-karate">🥋</div>
+      <span class="movie-card-tag">REVEALED</span>
+      <div class="movie-title-bar" id="mtb-karate">? ? ? ?</div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ====================================================
+     SECTION 2: COMPONENTS
+==================================================== -->
+<section id="components" class="section fade-in">
+  <h2 class="section-title">What is a Film Review?</h2>
+  <p class="section-sub">A complete review must include all of these key elements</p>
+  <div class="component-box">
+    <div class="comp-tag">Title of the Film</div>
+    <div class="comp-tag">Director</div>
+    <div class="comp-tag">Country</div>
+    <div class="comp-tag">Length / Duration</div>
+    <div class="comp-tag">Year of Release</div>
+    <div class="comp-tag">Producer</div>
+    <div class="comp-tag">Main Actors</div>
+    <div class="comp-tag">Story Summary</div>
+    <div class="comp-tag">Main Characters</div>
+    <div class="comp-tag">Special Effects</div>
+    <div class="comp-tag">Opinion</div>
+    <div class="comp-tag">Recommendation</div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ====================================================
+     SECTION 2b: DEFINITIONS
+==================================================== -->
+<section id="definitions" class="section fade-in">
+  <h2 class="section-title">Key Definitions</h2>
+  <p class="section-sub">Learn these words — you will need them to write your review</p>
+
+  <div class="definitions-grid">
+
+    <div class="def-card">
+      <div class="def-number">1</div>
+      <div class="def-content">
+        <div class="def-term">Director</div>
+        <div class="def-meaning">The person who controls how the movie is made.</div>
+      </div>
+    </div>
+
+    <div class="def-card">
+      <div class="def-number">2</div>
+      <div class="def-content">
+        <div class="def-term">Producer</div>
+        <div class="def-meaning">The person who organizes and pays for the movie.</div>
+      </div>
+    </div>
+
+    <div class="def-card">
+      <div class="def-number">3</div>
+      <div class="def-content">
+        <div class="def-term">Special Effects</div>
+        <div class="def-meaning">Visual effects that make the movie look exciting or realistic.</div>
+      </div>
+    </div>
+
+    <div class="def-card">
+      <div class="def-number">4</div>
+      <div class="def-content">
+        <div class="def-term">Performance</div>
+        <div class="def-meaning">How well the actors act in the movie.</div>
+      </div>
+    </div>
+
+    <div class="def-card">
+      <div class="def-number">5</div>
+      <div class="def-content">
+        <div class="def-term">Message</div>
+        <div class="def-meaning">The lesson or idea the movie teaches.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ====================================================
+     SECTION 3: TEMPLATES
+==================================================== -->
+<section id="templates" class="section fade-in">
+  <h2 class="section-title">Film Review Template</h2>
+  <p class="section-sub">Three structured paragraphs — study the template, then read the examples</p>
+
+  <!-- ── 1. INTRODUCTION ── -->
+  <div class="template-block">
+    <div class="template-header">1 — Introduction</div>
+    <span class="structure-pill">Title · Director · Country · Type of Film · Length · Year · Producer</span>
+    <div class="template-text">
+      The film <em>[Title]</em> is directed by <em>[Director]</em>. It was produced in <em>[Country]</em>. It is a <em>[type of film]</em> with a length of <em>[length/time]</em>. The film was released in <em>[year]</em> and produced by <em>[Producer]</em>.
+    </div>
+
+    <div class="examples-grid">
+      <div class="example-box">
+        <strong>🏠 Alone at Home</strong>
+        <p>The film <em>Alone at Home</em> is directed by Chris Columbus. It was produced in USA. It is a family comedy with a length of 103 minutes. The film was released in 1990 and produced by John Hughes.</p>
+      </div>
+      <div class="example-box">
+        <strong>🐼 Kung Fu Panda</strong>
+        <p>The film <em>Kung Fu Panda</em> is directed by Mark Osborne and John Stevenson. It was produced in USA. It is an animated action-comedy with a length of 92 minutes. The film was released in 2008 and produced by Melissa Cobb.</p>
+      </div>
+      <div class="example-box">
+        <strong>🥋 The Karate Kid <span style="font-weight:400;color:var(--muted);font-size:0.88em;">(Jackie Chan version)</span></strong>
+        <p>The film <em>The Karate Kid</em> is directed by Harald Zwart. It was produced in USA/China. It is an action-drama with a length of 140 minutes. The film was released in 2010 and produced by Jerry Weintraub.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. BODY ── -->
+  <div class="template-block">
+    <div class="template-header">2 — Body</div>
+    <span class="structure-pill">Story · Main Actors · Main Characters · Performance · Special Effects · Message</span>
+    <div class="template-text">
+      The story is about <em>[brief summary]</em>. The main actors are <em>[actors]</em>. The main characters are <em>[characters]</em>. The performances were <em>[comment on acting]</em>, and the special effects were <em>[comment on visuals/effects]</em>. The message of the film is <em>[lesson/moral/theme]</em>.
+    </div>
+
+    <div class="examples-grid">
+      <div class="example-box">
+        <strong>🏠 Alone at Home</strong>
+        <p>The story is about a young boy left home alone who has to defend his house from burglars. The main actors are Macaulay Culkin, Joe Pesci, and Daniel Stern. The main characters are Kevin McCallister and the burglars Harry and Marv. The performances were funny and convincing, and the special effects were minimal but effective for comedy. The message of the film is the importance of family and clever thinking.</p>
+      </div>
+      <div class="example-box">
+        <strong>🐼 Kung Fu Panda</strong>
+        <p>The story is about a clumsy panda named Po who dreams of becoming a kung fu master. The main actors are Jack Black, Dustin Hoffman, and Angelina Jolie. The main characters are Po, Master Shifu, and Tai Lung. The performances were expressive and entertaining, and the special effects were amazing animation and fight sequences. The message of the film is believe in yourself and follow your destiny.</p>
+      </div>
+      <div class="example-box">
+        <strong>🥋 The Karate Kid <span style="font-weight:400;color:var(--muted);font-size:0.88em;">(Jackie Chan version)</span></strong>
+        <p>The story is about a boy who moves to a new country and learns martial arts to defend himself and gain confidence. The main actors are Jaden Smith, Jackie Chan, and Taraji P. Henson. The main characters are Dre Parker and Mr. Han. The performances were emotional and inspiring, and the special effects were realistic martial arts choreography. The message of the film is discipline, respect, and perseverance.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. CONCLUSION ── -->
+  <div class="template-block">
+    <div class="template-header">3 — Conclusion</div>
+    <span class="structure-pill">Opinion · Recommendation</span>
+    <div class="template-text">
+      I liked / didn't like the film because <em>[reason]</em>. I would recommend / not recommend it to others because <em>[reason]</em>.
+    </div>
+
+    <div class="examples-grid">
+      <div class="example-box">
+        <strong>🏠 Alone at Home</strong>
+        <p>I liked the film because it is funny and entertaining for all ages. I would recommend it to others because it is a classic family comedy.</p>
+      </div>
+      <div class="example-box">
+        <strong>🐼 Kung Fu Panda</strong>
+        <p>I liked the film because it is exciting, humorous, and beautifully animated. I would recommend it to others because it teaches important lessons while being fun to watch.</p>
+      </div>
+      <div class="example-box">
+        <strong>🥋 The Karate Kid <span style="font-weight:400;color:var(--muted);font-size:0.88em;">(Jackie Chan version)</span></strong>
+        <p>I liked the film because it has inspiring performances and exciting action scenes. I would recommend it to others because it shows the importance of discipline and courage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ====================================================
+     SECTION 4: EXERCISES
+==================================================== -->
+<section id="exercises" class="section fade-in">
+  <h2 class="section-title">Practice Exercises</h2>
+  <p class="section-sub">Three interactive activities — complete them and check your answers instantly</p>
+
+  <!-- ─── EXERCISE 1: Fill in the Blanks ─── -->
+  <div class="exercise-card">
+    <div class="exercise-title">
+      <span class="ex-badge">Exercise 1</span>
+      Complete the Introduction
+    </div>
+    <p style="margin-bottom:1rem; color:#bbb; font-size:0.95rem;">
+      Click a word from the box, then click the blank where it should go — or type directly.
+    </p>
+
+    <!-- Word bank — chips are clickable -->
+    <div class="word-bank" id="wordBank1">
+      <span class="word-chip" data-word="Chris Columbus">Chris Columbus</span>
+      <span class="word-chip" data-word="USA">USA</span>
+      <span class="word-chip" data-word="1990">1990</span>
+      <span class="word-chip" data-word="family comedy">family comedy</span>
+      <span class="word-chip" data-word="103 minutes">103 minutes</span>
+      <span class="word-chip" data-word="John Hughes">John Hughes</span>
+    </div>
+
+    <div class="fill-sentence" id="fillSentences1">
+      The film <em>Alone at Home</em> is directed by <input class="fill-blank" data-answer="Chris Columbus" type="text" placeholder="___?" autocomplete="off" /><br/>
+      It was produced in <input class="fill-blank" data-answer="USA" type="text" placeholder="___?" autocomplete="off" /><br/>
+      It is a <input class="fill-blank" data-answer="family comedy" type="text" placeholder="___?" autocomplete="off" /> with a length of <input class="fill-blank" data-answer="103 minutes" type="text" placeholder="___?" autocomplete="off" /><br/>
+      The film was released in <input class="fill-blank" data-answer="1990" type="text" placeholder="___?" autocomplete="off" /> and produced by <input class="fill-blank" data-answer="John Hughes" type="text" placeholder="___?" autocomplete="off" />
+    </div>
+
+    <div>
+      <button class="btn-check" onclick="checkFill('fillSentences1','feedback1')">Check Answers ✓</button>
+      <button class="btn-reset" onclick="resetFill('fillSentences1','wordBank1','feedback1')">↺ Reset</button>
+    </div>
+    <div class="feedback" id="feedback1"></div>
+  </div>
+
+  <!-- ─── EXERCISE 2: Match Vocabulary ─── -->
+  <div class="exercise-card">
+    <div class="exercise-title">
+      <span class="ex-badge">Exercise 2</span>
+      Match the Vocabulary
+    </div>
+    <p style="margin-bottom:1rem; color:#bbb; font-size:0.95rem;">
+      Click a term on the left, then click its matching definition on the right.
+    </p>
+
+    <div class="match-columns">
+      <div class="match-left" id="matchLeft">
+        <div class="match-item left-item" data-id="1">1. Director</div>
+        <div class="match-item left-item" data-id="2">2. Special Effects</div>
+        <div class="match-item left-item" data-id="3">3. Main Characters</div>
+        <div class="match-item left-item" data-id="4">4. Producer</div>
+      </div>
+      <div class="match-right" id="matchRight">
+        <div class="match-item right-item" data-id="b">b) Visual / computer-generated visuals</div>
+        <div class="match-item right-item" data-id="d">d) Finances and organises the film</div>
+        <div class="match-item right-item" data-id="a">a) Controls how the film is made</div>
+        <div class="match-item right-item" data-id="c">c) The most important people in the story</div>
+      </div>
+    </div>
+
+    <div class="match-score" id="matchScore" style="display:none;"></div>
+    <button class="btn-reset" style="margin-top:1rem;" onclick="resetMatch()">↺ Reset</button>
+    <div class="feedback" id="feedbackMatch"></div>
+  </div>
+
+  <!-- ─── EXERCISE 3: Put in Order ─── -->
+  <div class="exercise-card">
+    <div class="exercise-title">
+      <span class="ex-badge">Exercise 3</span>
+      Put the Sentences in Order
+    </div>
+    <p style="margin-bottom:1rem; color:#bbb; font-size:0.95rem;">
+      Drag the sentences into the correct review order (Introduction → Body → Conclusion).
+    </p>
+
+    <div class="order-list" id="orderList">
+      <!-- Items injected by JS, shuffled -->
+    </div>
+
+    <div>
+      <button class="btn-check" onclick="checkOrder()">Check Order ✓</button>
+      <button class="btn-reset" onclick="resetOrder()">↺ Shuffle Again</button>
+    </div>
+    <div class="feedback" id="feedbackOrder"></div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ====================================================
+     SECTION 5: MODEL REVIEW
+==================================================== -->
+<section id="model" class="section model-review-section fade-in">
+  <h2 class="section-title">Model Review</h2>
+  <p class="section-sub">Study this complete example — copy and adapt the structure for your own review</p>
+
+  <div class="model-review-box">
+    <span class="model-label">★ Model Answer</span>
+
+    <div class="model-film-title">"12 Angry <span>Men</span>"</div>
+    <div class="model-year">1957 · Sidney Lumet · Drama · 96 min</div>
+
+    <p class="model-paragraph">
+      <span class="model-part-label">Introduction</span>
+      "12 Angry Men" is one of the best films I have ever watched. It is an American drama and courtroom film. It was made in 1957 and directed by Sidney Lumet. The film lasts for 96 minutes.
+    </p>
+
+    <p class="model-paragraph">
+      <span class="model-part-label">Body</span>
+      The story of the film is about twelve men who have to decide if a boy is guilty of killing his father. One juror tries to make the others think carefully about the evidence. As they talk, the men start to share their opinions and feelings. The actors Henry Fonda and Lee J. Cobb acted very well in this movie. The film has no special effects, but the story and acting make it feel very real.
+    </p>
+
+    <p class="model-paragraph">
+      <span class="model-part-label">Conclusion</span>
+      I really enjoyed this film and I think that people should see it because the story is interesting and it teaches a good lesson about fairness.
+    </p>
+
+    <button class="model-copy-btn" onclick="copyModel()">📋 Copy Model Text</button>
+    <span id="copyConfirm" style="margin-left:1rem; font-family:var(--font-mono); font-size:0.75rem; color:var(--green); opacity:0; transition:opacity 0.3s;">Copied!</span>
+  </div>
+</section>
+
+<!-- ====================================================
+     MOVIE MODAL
+==================================================== -->
+<div class="modal-overlay" id="movieModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-movie-title" id="modalTitle"></div>
+    <div id="modalDetails"></div>
+    <div class="modal-tip">
+      💡 Use the <strong>Template</strong> section above to write a review for this film!
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================
+     FOOTER
+==================================================== -->
+<footer>
+  Film Review Lesson &nbsp;·&nbsp; 1st-Year Baccalaureate &nbsp;·&nbsp; Presented by Anouar Dyane
+</footer>
+
+<!-- ====================================================
+     JAVASCRIPT
+==================================================== -->
+<script>
+/* ─────────────────────────────────────────────
+   PRESENTER PHOTO UPLOAD
+───────────────────────────────────────────── */
+document.getElementById('photoUpload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const img = document.getElementById('presenterImg');
+    img.src = ev.target.result;
+    document.getElementById('phIcon').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
+
+// Hide placeholder icon if img has a real src
+(function() {
+  const img = document.getElementById('presenterImg');
+  if (img.src && !img.src.endsWith('/')) {
+    document.getElementById('phIcon').style.display = 'none';
+  }
+})();
+
+
+/* ─────────────────────────────────────────────
+   SCROLL FADE-IN
+───────────────────────────────────────────── */
+const fadeEls = document.querySelectorAll('.fade-in');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+fadeEls.forEach(el => io.observe(el));
+
+
+/* ─────────────────────────────────────────────
+   MOVIE GRID — Static HTML cards
+   To swap a poster image, just change the src=""
+   attribute on the matching <img> tag in the HTML above.
+───────────────────────────────────────────── */
+
+// Show emoji fallback only when image src is empty or broken
+(function initPosters() {
+  [
+    { cardId: 'card-alone',  imgId: 'img-alone',  fbId: 'fallback-alone'  },
+    { cardId: 'card-kungfu', imgId: 'img-kungfu', fbId: 'fallback-kungfu' },
+    { cardId: 'card-karate', imgId: 'img-karate', fbId: 'fallback-karate' },
+  ].forEach(function(p) {
+    const img = document.getElementById(p.imgId);
+    const fb  = document.getElementById(p.fbId);
+    // If src is empty, hide the img element and show emoji
+    if (!img.getAttribute('src')) {
+      img.style.display = 'none';
+      fb.style.display  = 'flex';
+    } else {
+      fb.style.display = 'none';
+    }
+    // If image fails to load, show emoji
+    img.addEventListener('error', function() {
+      img.style.display = 'none';
+      fb.style.display  = 'flex';
+    });
+    // If image loads successfully, hide emoji
+    img.addEventListener('load', function() {
+      if (img.src) {
+        img.style.display = 'block';
+        fb.style.display  = 'none';
+      }
+    });
+  });
+})();
+
+// Movie details for modal popups
+const movieData = {
+  'card-alone':  { title: 'Alone at Home',  dir: 'Chris Columbus', country: 'USA',         year: 1990, type: 'Family Comedy', tbId: 'mtb-alone'  },
+  'card-kungfu': { title: 'Kung Fu Panda',  dir: 'Mark Osborne',   country: 'USA',         year: 2008, type: 'Animation',     tbId: 'mtb-kungfu' },
+  'card-karate': { title: 'The Karate Kid', dir: 'Harald Zwart',   country: 'USA / China', year: 2010, type: 'Action Drama',  tbId: 'mtb-karate' },
+};
+
+Object.keys(movieData).forEach(function(cardId) {
+  const card  = document.getElementById(cardId);
+  const movie = movieData[cardId];
+  card.addEventListener('click', function() {
+    // Reveal title bar
+    card.classList.add('revealed');
+    document.getElementById(movie.tbId).textContent = movie.title;
+    // Open modal
+    document.getElementById('modalTitle').textContent = movie.title;
+    document.getElementById('modalDetails').innerHTML =
+      '<div class="modal-detail"><strong>Director:</strong> '  + movie.dir     + '</div>' +
+      '<div class="modal-detail"><strong>Country:</strong> '   + movie.country + '</div>' +
+      '<div class="modal-detail"><strong>Year:</strong> '      + movie.year    + '</div>' +
+      '<div class="modal-detail"><strong>Type:</strong> '      + movie.type    + '</div>';
+    document.getElementById('movieModal').classList.add('open');
+  });
+});
+
+function closeModal() {
+  document.getElementById('movieModal').classList.remove('open');
+}
+
+document.getElementById('movieModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+
+/* ─────────────────────────────────────────────
+   EXERCISE 1: FILL IN THE BLANKS
+   Supports: word-chip click-to-fill + typing
+───────────────────────────────────────────── */
+
+let selectedChip = null;  // currently selected word-bank chip
+
+// Chip click logic: select chip, then click blank to fill
+document.querySelectorAll('#wordBank1 .word-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    if (chip.classList.contains('used')) return;
+    // Deselect previous
+    document.querySelectorAll('#wordBank1 .word-chip').forEach(c => c.style.outline = '');
+    if (selectedChip === chip) {
+      selectedChip = null;
+      return;
+    }
+    selectedChip = chip;
+    chip.style.outline = '2px solid var(--accent-glow)';
+    chip.style.outlineOffset = '2px';
+  });
+});
+
+// Blank click: fill with selected chip
+document.querySelectorAll('#fillSentences1 .fill-blank').forEach(blank => {
+  blank.addEventListener('click', () => {
+    if (selectedChip) {
+      blank.value = selectedChip.dataset.word;
+      blank.classList.remove('correct', 'wrong');
+      selectedChip.classList.add('used');
+      selectedChip.style.outline = '';
+      selectedChip = null;
+    }
+  });
+  // Typing: clear chip link
+  blank.addEventListener('input', () => { blank.classList.remove('correct', 'wrong'); });
+});
+
+function checkFill(containerId, feedbackId) {
+  const blanks = document.querySelectorAll(`#${containerId} .fill-blank`);
+  let correct = 0;
+  blanks.forEach(b => {
+    const val = b.value.trim().toLowerCase();
+    const ans = b.dataset.answer.toLowerCase();
+    b.classList.remove('correct', 'wrong');
+    if (val === ans) { b.classList.add('correct'); correct++; }
+    else               b.classList.add('wrong');
+  });
+  const fb = document.getElementById(feedbackId);
+  const total = blanks.length;
+  if (correct === total) {
+    fb.textContent = `✅ Perfect! All ${total} answers are correct. Excellent work!`;
+    fb.className = 'feedback success';
+  } else if (correct > 0) {
+    fb.textContent = `👍 ${correct} / ${total} correct. Check the red blanks and try again.`;
+    fb.className = 'feedback partial';
+  } else {
+    fb.textContent = `❌ No correct answers yet. Use the words in the box above.`;
+    fb.className = 'feedback error';
+  }
+}
+
+function resetFill(containerId, bankId, feedbackId) {
+  document.querySelectorAll(`#${containerId} .fill-blank`).forEach(b => {
+    b.value = '';
+    b.classList.remove('correct', 'wrong');
+  });
+  document.querySelectorAll(`#${bankId} .word-chip`).forEach(c => {
+    c.classList.remove('used');
+    c.style.outline = '';
+  });
+  const fb = document.getElementById(feedbackId);
+  fb.className = 'feedback';
+  fb.textContent = '';
+  selectedChip = null;
+}
+
+
+/* ─────────────────────────────────────────────
+   EXERCISE 2: MATCH VOCABULARY
+   Click left → click right to match
+───────────────────────────────────────────── */
+const matchPairs = { 1:'a', 2:'b', 3:'c', 4:'d' };
+let selectedLeft = null;
+let matchedCount = 0;
+
+document.querySelectorAll('#matchLeft .match-item').forEach(item => {
+  item.addEventListener('click', () => {
+    if (item.classList.contains('matched-correct')) return;
+    document.querySelectorAll('#matchLeft .match-item').forEach(i => i.classList.remove('selected'));
+    if (selectedLeft === item) { selectedLeft = null; return; }
+    selectedLeft = item;
+    item.classList.add('selected');
+  });
+});
+
+document.querySelectorAll('#matchRight .match-item').forEach(item => {
+  item.addEventListener('click', () => {
+    if (!selectedLeft) return;
+    if (item.classList.contains('matched-correct')) return;
+    const leftId  = parseInt(selectedLeft.dataset.id);
+    const rightId = item.dataset.id;
+    const correct = matchPairs[leftId];
+
+    if (rightId === correct) {
+      selectedLeft.classList.remove('selected');
+      selectedLeft.classList.add('matched-correct');
+      item.classList.add('matched-correct');
+      matchedCount++;
+      selectedLeft = null;
+
+      const scoreEl = document.getElementById('matchScore');
+      scoreEl.style.display = 'block';
+      scoreEl.textContent = `${matchedCount} / 4 matched`;
+
+      if (matchedCount === 4) {
+        const fb = document.getElementById('feedbackMatch');
+        fb.textContent = '🎉 Perfect! All definitions matched correctly!';
+        fb.className = 'feedback success';
+      }
+    } else {
+      item.classList.add('matched-wrong');
+      setTimeout(() => item.classList.remove('matched-wrong'), 600);
+      const fb = document.getElementById('feedbackMatch');
+      fb.textContent = '❌ Not quite — try a different definition.';
+      fb.className = 'feedback error';
+      setTimeout(() => { fb.className = 'feedback'; fb.textContent = ''; }, 1800);
+    }
+  });
+});
+
+function resetMatch() {
+  document.querySelectorAll('.match-item').forEach(i => {
+    i.classList.remove('selected', 'matched-correct', 'matched-wrong');
+  });
+  matchedCount = 0;
+  selectedLeft = null;
+  document.getElementById('matchScore').style.display = 'none';
+  const fb = document.getElementById('feedbackMatch');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+
+
+/* ─────────────────────────────────────────────
+   EXERCISE 3: DRAG-AND-DROP ORDER
+───────────────────────────────────────────── */
+const orderSentences = [
+  { id: 'c', pos: 1, text: 'The film <em>The Karate Kid</em> is directed by Harald Zwart.' },
+  { id: 'b', pos: 2, text: 'The story is about a boy who learns karate in China.' },
+  { id: 'a', pos: 3, text: 'I liked the film because it is exciting and inspiring.' },
+  { id: 'd', pos: 4, text: 'I recommend it to teenagers who enjoy action films.' },
+];
+
+function buildOrderList(shuffled) {
+  const list = document.getElementById('orderList');
+  list.innerHTML = '';
+  shuffled.forEach((s, idx) => {
+    const item = document.createElement('div');
+    item.className = 'order-item';
+    item.dataset.id = s.id;
+    item.draggable = true;
+    item.innerHTML = `<span class="order-num">${idx + 1}</span><span class="order-text">${s.text}</span><span class="order-handle">⠿</span>`;
+    item.addEventListener('dragstart', onDragStart);
+    item.addEventListener('dragover',  onDragOver);
+    item.addEventListener('dragleave', onDragLeave);
+    item.addEventListener('drop',      onDrop);
+    item.addEventListener('dragend',   onDragEnd);
+    list.appendChild(item);
+  });
+}
+
+let dragSrc = null;
+function onDragStart(e) { dragSrc = this; this.classList.add('dragging-active'); e.dataTransfer.effectAllowed = 'move'; }
+function onDragOver(e)  { e.preventDefault(); this.classList.add('dragover-target'); }
+function onDragLeave()  { this.classList.remove('dragover-target'); }
+function onDrop(e) {
+  e.preventDefault();
+  this.classList.remove('dragover-target');
+  if (dragSrc === this) return;
+  const list   = document.getElementById('orderList');
+  const items  = [...list.querySelectorAll('.order-item')];
+  const srcIdx = items.indexOf(dragSrc);
+  const tgtIdx = items.indexOf(this);
+  if (srcIdx < tgtIdx) list.insertBefore(dragSrc, this.nextSibling);
+  else                 list.insertBefore(dragSrc, this);
+  renumberOrder();
+}
+function onDragEnd() {
+  this.classList.remove('dragging-active');
+  document.querySelectorAll('.order-item').forEach(i => i.classList.remove('dragover-target'));
+}
+function renumberOrder() {
+  document.querySelectorAll('#orderList .order-item .order-num').forEach((el, i) => {
+    el.textContent = i + 1;
+  });
+}
+
+function checkOrder() {
+  const items    = [...document.querySelectorAll('#orderList .order-item')];
+  const correct  = ['c','b','a','d'];
+  let score = 0;
+  items.forEach((item, idx) => {
+    item.classList.remove('correct-pos', 'wrong-pos');
+    if (item.dataset.id === correct[idx]) { item.classList.add('correct-pos'); score++; }
+    else                                    item.classList.add('wrong-pos');
+  });
+  const fb = document.getElementById('feedbackOrder');
+  if (score === 4) {
+    fb.textContent = '✅ Perfect order! Introduction → Body → Conclusion!';
+    fb.className = 'feedback success';
+  } else {
+    fb.textContent = `${score}/4 in the correct position. The correct order is: Introduction → Body → Opinion → Recommendation.`;
+    fb.className = score >= 2 ? 'feedback partial' : 'feedback error';
+  }
+}
+
+function resetOrder() {
+  const shuffled = [...orderSentences].sort(() => Math.random() - 0.5);
+  buildOrderList(shuffled);
+  const fb = document.getElementById('feedbackOrder');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+
+// Initial build — shuffled
+resetOrder();
+
+
+/* ─────────────────────────────────────────────
+   COPY MODEL REVIEW
+───────────────────────────────────────────── */
+function copyModel() {
+  const text = `"12 Angry Men" is one of the best films I have ever watched. It is an American drama and courtroom film. It was made in 1957 and directed by Sidney Lumet. The film lasts for 96 minutes.\n\nThe story of the film is about twelve men who have to decide if a boy is guilty of killing his father. One juror tries to make the others think carefully about the evidence. As they talk, the men start to share their opinions and feelings. The actors Henry Fonda and Lee J. Cobb acted very well in this movie. The film has no special effects, but the story and acting make it feel very real.\n\nI really enjoyed this film and I think that people should see it because the story is interesting and it teaches a good lesson about fairness.`;
+  navigator.clipboard.writeText(text).then(() => {
+    const confirm = document.getElementById('copyConfirm');
+    confirm.style.opacity = '1';
+    setTimeout(() => confirm.style.opacity = '0', 2000);
+  }).catch(() => {
+    alert('Copy failed — please select the text manually.');
+  });
+}
+</script>
+</body>
+</html>
